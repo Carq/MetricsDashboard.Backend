@@ -4,9 +4,9 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace TilesDashboard.Core.Storage.Entities
 {
-    public abstract class TileData
+    public abstract class TileDataBase
     {
-        protected TileData(DateTimeOffset addedOn)
+        protected TileDataBase(DateTimeOffset addedOn)
         {
             AddedOn = addedOn;
         }

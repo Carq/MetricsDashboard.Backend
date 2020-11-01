@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TilesDashboard.Core.Domain.Services;
 using TilesDashboard.Core.Domain.ValueObjects;
+using TilesDashboard.Core.Type.ValueObjects;
 using TilesDashboard.Handy.Extensions;
 using TilesDashboard.PluginBase;
 using TilesDashboard.PluginBase.Data;

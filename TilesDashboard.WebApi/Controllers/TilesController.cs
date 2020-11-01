@@ -56,7 +56,7 @@ namespace TilesDashboard.WebApi.Controllers
         [BearerReadAuthorization]
         public async Task<IList<object>> GetMetricRecentData(string tileName, [FromQuery][Range(1, 30)] int? amountOfData, CancellationToken cancellationToken)
         {
-            return TileDtoMapper.Map(await _metricService.GetMetricRecentDataAsync(tileName, amountOfData ?? AmountOfDate, cancellationToken));
+            return TileDtoMapper.MapRecentData(await _metricService.GetMetricRecentDataAsync(tileName, amountOfData ?? AmountOfDate, cancellationToken));
         }
 
         [HttpPost("metric/{tileName}/record")]
@@ -70,14 +70,14 @@ namespace TilesDashboard.WebApi.Controllers
         [BearerReadAuthorization]
         public async Task<IList<object>> GetMetricDataSince(string tileName, [FromQuery][Required][Range(1, 30)] int days, CancellationToken cancellationToken)
         {
-            return TileDtoMapper.Map(await _metricService.GetMetricDataSinceAsync(tileName, days, cancellationToken));
+            return TileDtoMapper.MapRecentData(await _metricService.GetMetricDataSinceAsync(tileName, days, cancellationToken));
         }
 
         [HttpGet("integer/{tileName}/recent")]
         [BearerReadAuthorization]
         public async Task<IList<object>> GetIntegerRecentData(string tileName, [FromQuery][Range(1, 30)] int? amountOfData, CancellationToken cancellationToken)
         {
-            return TileDtoMapper.Map(await _integerTileService.GetIntegerRecentDataAsync(tileName, amountOfData ?? AmountOfDate, cancellationToken));
+            return TileDtoMapper.MapRecentData(await _integerTileService.GetIntegerRecentDataAsync(tileName, amountOfData ?? AmountOfDate, cancellationToken));
         }
 
         [HttpPost("integer/{tileName}/record")]
@@ -91,21 +91,21 @@ namespace TilesDashboard.WebApi.Controllers
         [BearerReadAuthorization]
         public async Task<IList<object>> GetIntegerDataSince(string tileName, [FromQuery][Required][Range(1, 30)] int days, CancellationToken cancellationToken)
         {
-            return TileDtoMapper.Map(await _integerTileService.GetIntegerDataSinceAsync(tileName, days, cancellationToken));
+            return TileDtoMapper.MapRecentData(await _integerTileService.GetIntegerDataSinceAsync(tileName, days, cancellationToken));
         }
 
         [HttpGet("heartbeat/{tileName}/recent")]
         [BearerReadAuthorization]
         public async Task<IList<object>> GetHeartbeatRecentData(string tileName, [FromQuery][Range(1, 30)] int? amountOfData, CancellationToken cancellationToken)
         {
-            return TileDtoMapper.Map(await _tileService.GetRecentDataAsync<HeartBeatData>(tileName, TileType.HeartBeat, amountOfData ?? AmountOfDate, cancellationToken));
+            return TileDtoMapper.MapRecentData(await _tileService.GetRecentDataAsync<HeartBeatData>(tileName, TileType.HeartBeat, amountOfData ?? AmountOfDate, cancellationToken));
         }
 
         [HttpGet("heartbeat/{tileName}/since")]
         [BearerReadAuthorization]
         public async Task<IList<object>> GetHeartbeatDataSince(string tileName, [FromQuery][Required][Range(1, 30)] int days, CancellationToken cancellationToken)
         {
-            return TileDtoMapper.Map(await _tileService.GetDataSinceAsync<HeartBeatData>(tileName, TileType.HeartBeat, _dateTimeOffsetProvider.Now.AddDays(-days), cancellationToken));
+            return TileDtoMapper.MapRecentData(await _tileService.GetDataSinceAsync<HeartBeatData>(tileName, TileType.HeartBeat, _dateTimeOffsetProvider.Now.AddDays(-days), cancellationToken));
         }
     }
 }

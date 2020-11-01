@@ -11,9 +11,9 @@ using TilesDashboard.Core.Exceptions;
 using TilesDashboard.Core.Storage;
 using TilesDashboard.Core.Type;
 using TilesDashboard.Core.Type.Enums;
+using TilesDashboard.Core.Type.TileData.Metric;
 using TilesDashboard.Handy.Events;
 using TilesDashboard.Handy.Tools;
-using MetricData = TilesDashboard.Core.Domain.Entities.MetricData;
 
 namespace TilesDashboard.Core.Domain.Services
 {
@@ -39,7 +39,13 @@ namespace TilesDashboard.Core.Domain.Services
 
         public async Task RecordMetricDataAsync(string tileName, MetricType metricType, decimal currentValue, CancellationToken cancellationToken)
         {
-            var metricData = new MetricData(currentValue, metricType, DateTimeOffsetProvider.Now);
+            MetricData metricData = metricType switch {
+                MetricType.Percentage => MetricData.Percentage(currentValue, DateTimeOffsetProvider.Now),
+                MetricType.Money => MetricData.Money(currentValue, DateTimeOffsetProvider.Now),
+                MetricType.Time => MetricData.Time(currentValue, DateTimeOffsetProvider.Now),
+                _ => throw new NotSupportedException()
+            };
+
             var tile = await TilesRepository.GetTileWithoutData(tileName, TileType.Metric, cancellationToken);
 
             var metricConfiguration = BsonSerializer.Deserialize<MetricConfiguration>(tile.Configuration);
@@ -49,7 +55,7 @@ namespace TilesDashboard.Core.Domain.Services
             }
 
             await TilesRepository.InsertData(tileName, TileType.Metric, metricData.ToBsonDocument(), cancellationToken);
-            await _eventDispatcher.PublishAsync(new NewDataEvent(new TileId(tileName, TileType.Metric), new Type.MetricData(metricData.Value, metricData.AddedOn)), cancellationToken);
+            await _eventDispatcher.PublishAsync(new NewDataEvent(new TileId(tileName, TileType.Metric), metricData), cancellationToken);
         }
     }
 }

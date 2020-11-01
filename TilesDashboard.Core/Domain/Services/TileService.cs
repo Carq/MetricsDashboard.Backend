@@ -13,6 +13,8 @@ using TilesDashboard.Core.Domain.Repositories;
 using TilesDashboard.Core.Storage;
 using TilesDashboard.Core.Storage.Entities;
 using TilesDashboard.Core.Type.Enums;
+using TilesDashboard.Core.Type.TileData;
+using TilesDashboard.Core.Type.TileData.Metric;
 using TilesDashboard.Handy.Tools;
 
 namespace TilesDashboard.Core.Domain.Services
@@ -43,25 +45,25 @@ namespace TilesDashboard.Core.Domain.Services
             {
                 object configuration = null;
                 var rawData = tile.Data.TakeLast(amountOfData);
-                var data = new List<TileData>();
+                var data = new List<ITileData>();
                 if (tile.Id.TileType == TileType.Metric)
                 {
                     configuration = BsonSerializer.Deserialize<MetricConfiguration>(tile.Configuration);
-                    data = DeserializeData<MetricData>(rawData).Cast<TileData>().ToList();
+                    data = DeserializeData<MetricData>(rawData).Cast<ITileData>().ToList();
                 }
                 else if (tile.Id.TileType == TileType.Weather)
                 {
-                    data = DeserializeData<WeatherData>(rawData).Cast<TileData>().ToList();
+                    data = DeserializeData<WeatherData>(rawData).Cast<ITileData>().ToList();
                 }
                 else if (tile.Id.TileType == TileType.Integer)
                 {
                     configuration = BsonSerializer.Deserialize<IntegerConfiguration>(tile.Configuration);
-                    data = DeserializeData<IntegerData>(rawData).Cast<TileData>().ToList();
+                    data = DeserializeData<IntegerData>(rawData).Cast<ITileData>().ToList();
                 }
                 else if (tile.Id.TileType == TileType.HeartBeat)
                 {
                     configuration = BsonSerializer.Deserialize<HeartBeatConfiguration>(tile.Configuration);
-                    data = DeserializeData<HeartBeatData>(rawData).Cast<TileData>().ToList();
+                    data = DeserializeData<HeartBeatData>(rawData).Cast<ITileData>().ToList();
                 }
 
                 tilesWithCurrentData.Add(new GenericTileWithCurrentData(tile.Id.Name, tile.Id.TileType, data, new Group(tile.Group), configuration));
@@ -80,22 +82,22 @@ namespace TilesDashboard.Core.Domain.Services
         }
 
         public async Task<IList<TData>> GetRecentDataAsync<TData>(string tileName, TileType type, int amountOfData, CancellationToken cancellationToken)
-            where TData : TileData
+            where TData : ITileData
         {
             var tileDbEntity = await TilesRepository.GetTileWithLimitedRecentData(tileName, type, amountOfData, cancellationToken);
-            var rawData = tileDbEntity.Data.OrderBy(x => x[nameof(TileData.AddedOn)]).TakeLast(amountOfData);
+            var rawData = tileDbEntity.Data.OrderBy(x => x[nameof(TileDataBase.AddedOn)]).TakeLast(amountOfData);
             return DeserializeData<TData>(rawData);
         }
 
         public async Task<IList<TData>> GetDataSinceAsync<TData>(string tileName, TileType type, DateTimeOffset sinceDate, CancellationToken cancellationToken)
-            where TData : TileData
+            where TData : ITileData
         {
             var tileDbEntity = await TilesRepository.GetTileDataSince(tileName, type, sinceDate, cancellationToken);
             return DeserializeData<TData>(tileDbEntity?.Data ?? Array.Empty<BsonDocument>());
         }
 
         protected static List<TData> DeserializeData<TData>(IEnumerable<BsonDocument> rawData)
-            where TData : TileData
+            where TData : ITileData
         {
             var result = new List<TData>();
             foreach (var item in rawData)

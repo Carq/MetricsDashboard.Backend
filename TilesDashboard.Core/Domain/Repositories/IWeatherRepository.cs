@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using TilesDashboard.Core.Domain.Entities;
 using TilesDashboard.Core.Domain.ValueObjects;
+using TilesDashboard.Core.Type.ValueObjects;
 
 namespace TilesDashboard.Core.Domain.Repositories
 {

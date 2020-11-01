@@ -55,7 +55,7 @@ namespace TilesDashboard.Core.Domain.Repositories
         public async Task<TileDbEntity> GetTileDataSince(string tileName, TileType type, DateTimeOffset sinceDate, CancellationToken cancellationToken)
         {
             var filter = TileDbEntityExtensions.TileDbFilter(tileName, type);
-            var onlyToday = Builders<BsonDocument>.Filter.Gte($"{nameof(TileDbEntity.Data)}.{nameof(TileData.AddedOn)}", sinceDate.UtcDateTime.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
+            var onlyToday = Builders<BsonDocument>.Filter.Gte($"{nameof(TileDbEntity.Data)}.{nameof(TileDataBase.AddedOn)}", sinceDate.UtcDateTime.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture));
 
             var group = BsonSerializer.Deserialize<BsonDocument>($"{{ _id: \"$_id\", Data: {{ $push: \"$Data\" }} }}");
 

@@ -1,26 +1,24 @@
 ﻿using System;
-using Dawn;
 
-namespace TilesDashboard.Core.Domain.ValueObjects
+namespace TilesDashboard.Core.Type.ValueObjects
 {
-    public class Percentage : DecimalValueObject
+    public class Percentage : DecimalValue
     {
         public const decimal Min = 0;
 
         public const decimal Max = 100;
 
         public Percentage(decimal value)
-            : base(value)
         {
-            Validate(value);
+            if (value < Min || value > Max)
+            {
+                throw new ArgumentException($"Percentage value has to be in range of 1-100. Given value {value}.");
+            }
+
+            Value = Math.Round(value, 2);
         }
 
         public static Percentage Zero => new Percentage(0);
-
-        public static void Validate(decimal value)
-        {
-            Guard.Argument(value, nameof(Percentage)).InRange(Min, Max);
-        }
 
         public decimal GetRoundedValue()
         {

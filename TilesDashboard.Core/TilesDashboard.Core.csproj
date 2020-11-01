@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Domain\ValueObjects\" />
     <Folder Include="Storage\Constants\" />
   </ItemGroup>
 

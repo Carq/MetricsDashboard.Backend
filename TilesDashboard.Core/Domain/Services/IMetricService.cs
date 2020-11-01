@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using TilesDashboard.Core.Domain.Entities;
 using TilesDashboard.Core.Type.Enums;
+using TilesDashboard.Core.Type.TileData.Metric;
 
 namespace TilesDashboard.Core.Domain.Services
 {

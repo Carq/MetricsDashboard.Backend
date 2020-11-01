@@ -2,13 +2,14 @@
 using Dawn;
 using TilesDashboard.Core.Storage.Entities;
 using TilesDashboard.Core.Type.Enums;
+using TilesDashboard.Core.Type.TileData;
 using TilesDashboard.Handy.Extensions;
 
 namespace TilesDashboard.Core.Domain.Entities
 {
     public class GenericTileWithCurrentData
     {
-        public GenericTileWithCurrentData(string name, TileType type, IList<TileData> data, Group group, object configuration = null)
+        public GenericTileWithCurrentData(string name, TileType type, IList<ITileData> data, Group group, object configuration = null)
         {
             Name = Guard.Argument(name, nameof(name)).NotNull().NotEmpty();
             Type = Guard.Argument(type, nameof(type)).NotDefault();
@@ -25,6 +26,6 @@ namespace TilesDashboard.Core.Domain.Entities
 
         public Group Group { get; private set; }
 
-        public IList<TileData> Data { get; private set; } = new List<TileData>();
+        public IList<ITileData> Data { get; private set; } = new List<ITileData>();
     }
 }

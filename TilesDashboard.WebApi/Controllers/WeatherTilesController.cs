@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using TilesDashboard.Contract.RecordData;
 using TilesDashboard.Core.Domain.Services;
 using TilesDashboard.Core.Domain.ValueObjects;
+using TilesDashboard.Core.Type.ValueObjects;
 using TilesDashboard.WebApi.Authorization;
 using TilesDashboard.WebApi.Mappers;
 
@@ -29,14 +30,14 @@ namespace TilesDashboard.WebApi.Controllers
         [BearerReadAuthorization]
         public async Task<IList<object>> GetWeatherRecentData(string tileName, CancellationToken cancellationToken)
         {
-            return TileDtoMapper.Map(await _weatherService.GetWeatherRecentDataAsync(tileName, AmountOfDate, cancellationToken));
+            return TileDtoMapper.MapRecentData(await _weatherService.GetWeatherRecentDataAsync(tileName, AmountOfDate, cancellationToken));
         }
 
         [HttpGet("{tileName}/since")]
         [BearerReadAuthorization]
         public async Task<IList<object>> GetWeatherDataSince(string tileName, [FromQuery][Required][Range(1, 24)] int hours, CancellationToken cancellationToken)
         {
-            return TileDtoMapper.Map(await _weatherService.GetWeatherDataSinceAsync(tileName, hours, cancellationToken));
+            return TileDtoMapper.MapRecentData(await _weatherService.GetWeatherDataSinceAsync(tileName, hours, cancellationToken));
         }
 
         [HttpPost("{tileName}/record")]

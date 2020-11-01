@@ -2,8 +2,9 @@
 using System.Linq;
 using TilesDashboard.Contract;
 using TilesDashboard.Core.Domain.Entities;
-using TilesDashboard.Core.Storage.Entities;
 using TilesDashboard.Core.Type.Enums;
+using TilesDashboard.Core.Type.TileData;
+using TilesDashboard.Core.Type.TileData.Metric;
 using TilesDashboard.Handy.Extensions;
 
 namespace TilesDashboard.WebApi.Mappers
@@ -23,93 +24,41 @@ namespace TilesDashboard.WebApi.Mappers
                     Group = item.Group != null ? new GroupDto(item.Group.Name, item.Group.Order) : null,
                 };
 
-                tileWithDataDto.Data.AddRange(Map(item.Type, item.Data));
+                tileWithDataDto.Data.AddRange(MapRecentData(item.Data));
                 result.Add(tileWithDataDto);
             }
 
             return result;
         }
 
-        public static IList<object> Map(IList<WeatherData> data)
+        public static IList<object> MapRecentData(IList<MetricData> recentData)
         {
-            return data.Select(MapWeatherData).ToList();
+            return recentData.Select(MapTileData).ToList();
         }
 
-        public static IList<object> Map(IList<MetricData> data)
+        public static IList<object> MapRecentData(IList<IntegerData> recentData)
         {
-            return data.Select(MapMetricData).ToList();
+            return recentData.Select(MapTileData).ToList();
         }
 
-        public static IList<object> Map(IList<IntegerData> data)
+        public static IList<object> MapRecentData(IList<WeatherData> recentData)
         {
-            return data.Select(MapIntegerData).ToList();
+            return recentData.Select(MapTileData).ToList();
         }
 
-        public static IList<object> Map(IList<HeartBeatData> data)
+        public static IList<object> MapRecentData(IList<HeartBeatData> recentData)
         {
-            return data.Select(MapHeartBeatData).ToList();
+            return recentData.Select(MapTileData).ToList();
         }
 
-        public static IList<object> Map(TileType type, IList<TileData> recentData)
+        public static IList<object> MapRecentData(IList<ITileData> recentData)
         {
-            switch (type)
-            {
-                case TileType.Metric:
-                    return recentData.Select(MapMetricData).ToList();
-                case TileType.Weather:
-                    return recentData.Select(MapWeatherData).ToList();
-                case TileType.Integer:
-                    return recentData.Select(MapIntegerData).ToList();
-                case TileType.HeartBeat:
-                    return recentData.Select(MapHeartBeatData).ToList();
-                default:
-                    return null;
-            }
+            return recentData.Select(MapTileData).ToList();
         }
 
-        private static object MapMetricData(TileData metricData)
+        private static object MapTileData(ITileData tileData)
         {
-            var converted = metricData as MetricData;
-            return new
-            {
-                converted.Value,
-                converted.AddedOn,
-            };
-        }
-
-        private static object MapIntegerData(TileData metricData)
-        {
-            var converted = metricData as IntegerData;
-            return new
-            {
-                converted.Value,
-                converted.AddedOn,
-            };
-        }
-
-        private static object MapWeatherData(TileData weatherData)
-        {
-            var converted = weatherData as WeatherData;
-
-            return new
-            {
-                Temperature = converted.Temperature.GetRoundedValue(),
-                Humidity = converted.Humidity.GetRoundedValue(),
-                converted.AddedOn,
-            };
-        }
-
-        private static object MapHeartBeatData(TileData heartbeat)
-        {
-            var converted = heartbeat as HeartBeatData;
-
-            return new
-            {
-                converted.ResponseTimeInMs,
-                converted.AppVersion,
-                converted.AddedOn,
-                converted.AdditionalInfo,
-            };
+            return tileData.GetData();
         }
     }
 }

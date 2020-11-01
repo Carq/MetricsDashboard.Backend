@@ -25,6 +25,6 @@ namespace TilesDashboard.PluginBase.Notification
             return Task.CompletedTask;
         }
 
-        public abstract Task PerformNotificationAsync(object newData,CancellationToken cancellationToken);
+        public abstract Task PerformNotificationAsync(object newData, CancellationToken cancellationToken);
     }
 }

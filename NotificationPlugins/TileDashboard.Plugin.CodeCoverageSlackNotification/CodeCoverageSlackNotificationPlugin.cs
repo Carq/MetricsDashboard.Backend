@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using TilesDashboard.Core.Type;
+using TilesDashboard.Core.Type.TileData.Metric;
 using TilesDashboard.PluginBase;
 using TilesDashboard.PluginBase.Notification;
 
@@ -23,12 +24,12 @@ namespace TileDashboard.Plugin.CodeCoverageSlackNotification
 
         public override TileId TileId { get; } = new TileId("BE Unit Test Coverage", TilesDashboard.Core.Type.Enums.TileType.Metric);
 
-        public override async Task PerformNotificationAsync(object newData,CancellationToken cancellationToken)
+        public override async Task PerformNotificationAsync(object newData, CancellationToken cancellationToken)
         {
             var converted = newData as MetricData;
             if (converted != null)
             {
-                await SendMessage($"New value for {TileId}: {converted.Value}%", cancellationToken); 
+                await SendMessage($"New value for {TileId}: {converted}%", cancellationToken); 
             }
         }
 
